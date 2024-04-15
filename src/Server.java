@@ -20,6 +20,7 @@ public class Server {
                 // create a new socket object for client when they connect
                 Socket socket = serverSocket.accept();
                 System.out.println("A new client has connected.");
+                System.out.flush();
 
                 // spawns a new thread for each client
                 ClientHandler clientHandler = new ClientHandler(socket);

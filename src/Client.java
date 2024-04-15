@@ -24,14 +24,16 @@ public class Client extends Application {
     private String username;
     private ClientController controller;
 
+    // Default consrtuctor
     public Client() {
-        // Initialize default values for the fields if necessary
         this.socket = null;
         this.bufferedReader = null;
         this.bufferedWriter = null;
         this.username = "DefaultUsername";
     }
     
+    // -----------------------------------------------------------------------------------------------------------------------
+    // used to prevent sending of messages if the socket is not properly connected (can't click the send button when false)
     private BooleanProperty readyProperty = new SimpleBooleanProperty(false);
     
     // Getter for the property
@@ -43,20 +45,9 @@ public class Client extends Application {
     public void setReady(boolean ready) {
         this.readyProperty.set(ready);
     }
+    // -----------------------------------------------------------------------------------------------------------------------
 
-    // // Update your constructor or initialization method to set this property to true once everything is set up
-    // public Client(Socket socket, String username) {
-    //     try {
-    //         this.socket = socket;
-    //         this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-    //         this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-    //         this.username = username;
-    //         // Assuming everything is initialized correctly
-    //         setReady(true);
-    //     } catch (IOException e) {
-    //         closeEverything(socket, bufferedReader, bufferedWriter);
-    //     }
-    // }
+  
 
     public void sendMessage(String messageToSend) {
         try {
@@ -86,6 +77,7 @@ public class Client extends Application {
                 while (socket.isConnected()) {
                     try {
                         msgFromGroupChat = bufferedReader.readLine();
+
                     // Update chat history using the controller
                     if (msgFromGroupChat != null) {
                         controller.updateChatHistory(msgFromGroupChat);
@@ -121,6 +113,7 @@ public class Client extends Application {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter your username for the group chat: ");
         String username = scanner.nextLine();
+        System.out.flush();
     
         // Now initialize the socket here, so the 'Client' instance created by JavaFX is the one that's fully initialized
         try {
@@ -143,12 +136,37 @@ public class Client extends Application {
         primaryStage.setTitle("Group Chat");
         primaryStage.show();
     
+        sendMessage("");
         // Start listening for messages
         listenForMessages();
     }
     
 
 
+
+
+    public static void main(String[] args) throws IOException {    
+        // Launch the JavaFX application
+        launch(args);
+    }
+    
+}
+
+
+
+  // // Update your constructor or initialization method to set this property to true once everything is set up
+    // public Client(Socket socket, String username) {
+    //     try {
+    //         this.socket = socket;
+    //         this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+    //         this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+    //         this.username = username;
+    //         // Assuming everything is initialized correctly
+    //         setReady(true);
+    //     } catch (IOException e) {
+    //         closeEverything(socket, bufferedReader, bufferedWriter);
+    //     }
+    // }
 
     // must define the start() method for javaFX applications: initializes and displayes the GUI
     // @Override
@@ -165,7 +183,7 @@ public class Client extends Application {
     //     primaryStage.show();
     // }
 
-    public static void main(String[] args) throws IOException {
+    // public static void main(String[] args) throws IOException {
         // // Get username input from the user
         // Scanner scanner = new Scanner(System.in);
         // System.out.println("Enter your username for the group chat: ");
@@ -179,7 +197,5 @@ public class Client extends Application {
         // client.listenForMessages();
     
         // Launch the JavaFX application
-        launch(args);
-    }
-    
-}
+    //     launch(args);
+    // }

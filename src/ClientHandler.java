@@ -69,14 +69,23 @@ public class ClientHandler implements Runnable {
         // for each clientHandler in our array list....
         for (ClientHandler clientHandler : clientHandlers) {
             try {
-                // send message to all other clients (except the one that sent the message)
-                if(!clientHandler.clientUsername.equals(clientUsername)) {
-                    clientHandler.bufferedWriter.write(messageToSend);
-                    // sends a newline (acts like pressing the <enter> key)
-                    clientHandler.bufferedWriter.newLine();
+                    // send message to all other clients (except the one that sent the message)
+                    if(!clientHandler.clientUsername.equals(clientUsername)) {
+                        clientHandler.bufferedWriter.write(messageToSend);
+                        // sends a newline (acts like pressing the <enter> key)
+                        clientHandler.bufferedWriter.newLine();
 
-                    // fills the entire buffer so that message is sent
-                    clientHandler.bufferedWriter.flush();
+                        // fills the entire buffer so that message is sent
+                        clientHandler.bufferedWriter.flush();
+                
+                // // send message to all other clients (except the one that sent the message)
+                // if(!clientHandler.clientUsername.equals(clientUsername)) {
+                //     clientHandler.bufferedWriter.write(messageToSend);
+                //     // sends a newline (acts like pressing the <enter> key)
+                //     clientHandler.bufferedWriter.newLine();
+
+                //     // fills the entire buffer so that message is sent
+                //     clientHandler.bufferedWriter.flush();
                 }
             } catch (IOException e) {
                 closeEverything(socket, bufferedReader, bufferedWriter);
