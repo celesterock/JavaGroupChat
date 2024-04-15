@@ -142,60 +142,9 @@ public class Client extends Application {
     }
     
 
-
-
-
     public static void main(String[] args) throws IOException {    
         // Launch the JavaFX application
         launch(args);
     }
     
 }
-
-
-
-  // // Update your constructor or initialization method to set this property to true once everything is set up
-    // public Client(Socket socket, String username) {
-    //     try {
-    //         this.socket = socket;
-    //         this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-    //         this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-    //         this.username = username;
-    //         // Assuming everything is initialized correctly
-    //         setReady(true);
-    //     } catch (IOException e) {
-    //         closeEverything(socket, bufferedReader, bufferedWriter);
-    //     }
-    // }
-
-    // must define the start() method for javaFX applications: initializes and displayes the GUI
-    // @Override
-    // public void start(Stage primaryStage) throws Exception {
-    //     FXMLLoader loader = new FXMLLoader(getClass().getResource("ChatClient.fxml"));
-    //     Parent root = loader.load();
-    //     ClientController controller = loader.getController();
-    //     controller.setClient(this); // Pass the Client instance to the controller
-    //     controller.setupBindings(); // Setup bindings after the client is set
-
-
-    //     primaryStage.setScene(new Scene(root));
-    //     primaryStage.setTitle("Group Chat");
-    //     primaryStage.show();
-    // }
-
-    // public static void main(String[] args) throws IOException {
-        // // Get username input from the user
-        // Scanner scanner = new Scanner(System.in);
-        // System.out.println("Enter your username for the group chat: ");
-        // String username = scanner.nextLine();
-    
-        // // Create a socket and initialize the client object
-        // Socket socket = new Socket("localhost", 1234);
-        // Client client = new Client(socket, username);
-    
-        // // Start listening for messages from the server in a separate thread
-        // client.listenForMessages();
-    
-        // Launch the JavaFX application
-    //     launch(args);
-    // }

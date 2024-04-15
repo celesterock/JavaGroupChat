@@ -22,10 +22,14 @@ public class ClientHandler implements Runnable {
     private BufferedWriter bufferedWriter;
 
     private String clientUsername;
+
+    // used to update server GUI with messages sent from Clients
+    private ServerController serverController;
     
-    public ClientHandler(Socket socket) {
+    public ClientHandler(Socket socket, ServerController serverController) {
         try {
             this.socket = socket;
+            this.serverController = serverController;
 
             // OutputStreamWriter lets us send character streams (as opposed to bytes)
             // Buffer makes communication more efficient?
@@ -70,28 +74,20 @@ public class ClientHandler implements Runnable {
         for (ClientHandler clientHandler : clientHandlers) {
             try {
                     // send message to all other clients (except the one that sent the message)
-                    if(!clientHandler.clientUsername.equals(clientUsername)) {
-                        clientHandler.bufferedWriter.write(messageToSend);
-                        // sends a newline (acts like pressing the <enter> key)
-                        clientHandler.bufferedWriter.newLine();
+                    clientHandler.bufferedWriter.write(messageToSend);
+                    // sends a newline (acts like pressing the <enter> key)
+                    clientHandler.bufferedWriter.newLine();
 
-                        // fills the entire buffer so that message is sent
-                        clientHandler.bufferedWriter.flush();
-                
-                // // send message to all other clients (except the one that sent the message)
-                // if(!clientHandler.clientUsername.equals(clientUsername)) {
-                //     clientHandler.bufferedWriter.write(messageToSend);
-                //     // sends a newline (acts like pressing the <enter> key)
-                //     clientHandler.bufferedWriter.newLine();
-
-                //     // fills the entire buffer so that message is sent
-                //     clientHandler.bufferedWriter.flush();
-                }
+                    // fills the entire buffer so that message is sent
+                    clientHandler.bufferedWriter.flush();
+            
             } catch (IOException e) {
                 closeEverything(socket, bufferedReader, bufferedWriter);
             }
-
         }
+
+        // send the message to the server GUI to maintain the chat history
+        serverController.updateChatHistory(messageToSend);
     }
 
     public void removeClientHandler() {
