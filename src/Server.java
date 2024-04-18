@@ -12,6 +12,8 @@ import javafx.stage.Stage;
 
 public class Server extends Application {
     private ServerSocket serverSocket;
+    private ServerController serverController;
+    Stage stage;
 
     public Server() {}
 
@@ -20,13 +22,18 @@ public class Server extends Application {
         this.serverSocket = serverSocket;
     }
 
-    public void startServer(ServerController serverController) {
+    public void startServer() {
         try {
             // Start the server in a new thread to avoid blocking JavaFX thread
             new Thread(() -> {
                 try {
+                    // random default port
+                    int port = 0;
+
+                    port = serverController.getPort();
                     // Initialize server socket
-                    serverSocket = new ServerSocket(1234); 
+                    serverSocket = new ServerSocket(port); 
+                    System.out.println("Successfully started new server at port " + port);
                     while (!serverSocket.isClosed()) {
                         Socket socket = serverSocket.accept();
                         System.out.println("A new client has connected.");
@@ -41,6 +48,7 @@ public class Server extends Application {
                         // begin the execution of the thread
                         thread.start();
                     }
+
                 } catch (IOException e) {
                     closeServerSocket();
                 }
@@ -54,6 +62,7 @@ public class Server extends Application {
         try {
             if (serverSocket != null) {
                 serverSocket.close();
+                stage.close();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -62,17 +71,16 @@ public class Server extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        stage = primaryStage;
         FXMLLoader loader = new FXMLLoader(getClass().getResource("ServerClient.fxml"));
         Parent root = loader.load();
 
         // each client handler needs a ServerController so that it can pass the message to the ServerController class to update the server GUI
-        ServerController serverController = loader.getController();
+        this.serverController = loader.getController();
+        serverController.setServer(this);
 
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
-
-        // Start the server processing in a separate thread
-        startServer(serverController);
     }
 
     public static void main(String[] args) {
