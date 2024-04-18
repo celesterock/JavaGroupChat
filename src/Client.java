@@ -142,16 +142,21 @@ public class Client extends Application {
         this.username = controller.getUsername();
         String IPText = controller.getIPText();
         int port = controller.getPort();
-        try {
-            InetAddress address = InetAddress.getByName(IPText);    
-            Socket socket = new Socket(address, port);
-            this.socket = socket;
-            this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            setReady(true); // This Client instance is now ready
-        } catch (IOException e) {
-            closeEverything(socket, bufferedReader, bufferedWriter);
-        }
+        // boolean isConnected = false;
+            try {
+                // while (!isConnected) {
+                InetAddress address = InetAddress.getByName(IPText);    
+                Socket socket = new Socket(address, port);
+                this.socket = socket;
+                this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+                this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                setReady(true); // This Client instance is now ready
+                // }
+            } catch (IOException e) {
+                System.out.println("Client conenct() function catch!");
+                closeEverything(socket, bufferedReader, bufferedWriter);
+            }
+
             
         sendMessage("");
         // Start listening for messages

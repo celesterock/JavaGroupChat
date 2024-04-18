@@ -65,8 +65,9 @@ public class ClientHandler implements Runnable {
                 
                 // break out of while loop when client disconnects
                 break;
-            }
+            } 
         }
+        System.out.println("ClientHandler run function: Client socket was sucessfully closed");
     }
 
     public void broadcastMessage(String messageToSend) {
@@ -93,25 +94,48 @@ public class ClientHandler implements Runnable {
     public void removeClientHandler() {
         // remove the current clientHandler (this) from the list
         clientHandlers.remove(this);
-
         broadcastMessage("SERVER: " + clientUsername + " has left the chat!");
     }
 
+    public void closeAllClients() {
+        for(ClientHandler clientHandler : clientHandlers) {
+            clientHandler.removeClientHandler();
+        }
+    }
+
     public void closeEverything(Socket socket, BufferedReader bufferedReader, BufferedWriter bufferedWriter) {
-        removeClientHandler();
         try {
-            if(bufferedReader != null) {
+            if (bufferedReader != null) {
                 bufferedReader.close();
             }
-            if(bufferedWriter != null) {
+            if (bufferedWriter != null) {
                 bufferedWriter.close();
             }
-            if(socket != null) {
+            if (socket != null) {
                 socket.close();
             }
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            removeClientHandler();
+            // broadcastMessage("SERVER: " + clientUsername + " has left the chat.");
         }
-
     }
+    // public void closeEverything(Socket socket, BufferedReader bufferedReader, BufferedWriter bufferedWriter) {
+    //     removeClientHandler();
+    //     try {
+    //         if(bufferedReader != null) {
+    //             bufferedReader.close();
+    //         }
+    //         if(bufferedWriter != null) {
+    //             bufferedWriter.close();
+    //         }
+    //         if(socket != null) {
+    //             socket.close();
+    //         }
+    //     } catch (IOException e) {
+    //         e.printStackTrace();
+    //     }
+
+    // }
 }

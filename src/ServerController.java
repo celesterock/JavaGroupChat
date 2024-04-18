@@ -45,8 +45,11 @@ public class ServerController {
     @FXML 
     public void stopServer(ActionEvent event)
     {
+        
         //stop the server from using that port and "running"
         server.closeServerSocket();
+        startServerBtn.setDisable(false);
+
         
     }
 

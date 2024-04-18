@@ -3,8 +3,10 @@ package src;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -14,6 +16,8 @@ public class Server extends Application {
     private ServerSocket serverSocket;
     private ServerController serverController;
     Stage stage;
+
+    public ArrayList<ClientHandler> clientHandlersCopy = new ArrayList<>();
 
     public Server() {}
 
@@ -43,6 +47,7 @@ public class Server extends Application {
                         // Note: there is a ClientHandler for each client, but also a static array list of Client 
                         //       handlers in the ClientHandler class so that they can communicate with each other
                         ClientHandler clientHandler = new ClientHandler(socket, serverController);
+                        clientHandlersCopy.add(clientHandler);
                         Thread thread = new Thread(clientHandler);
 
                         // begin the execution of the thread
@@ -61,8 +66,11 @@ public class Server extends Application {
     public void closeServerSocket() {
         try {
             if (serverSocket != null) {
+                clientHandlersCopy.get(0).closeAllClients();
                 serverSocket.close();
-                stage.close();
+                Platform.runLater(() -> {
+                    stage.close();
+                });
             }
         } catch (IOException e) {
             e.printStackTrace();
