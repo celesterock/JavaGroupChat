@@ -29,7 +29,19 @@ public class ClientController {
     @FXML
     private Button sendBtn;
 
+    @FXML
+    private TextField nameText;
+
+
+    
+    @FXML
+    private Button enterBtn;
+
+
+
     private Client client;
+
+    String username;
     String serverIP;
     int port;
 
@@ -42,7 +54,15 @@ public class ClientController {
 
 
     public void setupBindings() {
-        sendBtn.disableProperty().bind(client.readyProperty().not());
+        // sendBtn.disableProperty().bind(client.readyProperty().not());
+        connectBtn.setDisable(true);
+        sendBtn.setDisable(true);
+        msgHistory.setDisable(true);
+        disconnectBtn.setDisable(true);
+        IPText.setDisable(true);
+        PortText.setDisable(true);
+        msgInput.setDisable(true);
+        
     }
 
     @FXML
@@ -73,7 +93,9 @@ public class ClientController {
         client.connect();
 
         connectBtn.setDisable(true);
-
+        disconnectBtn.setDisable(false);
+        sendBtn.setDisable(false);
+        msgInput.setDisable(false);
 
     }
 
@@ -82,6 +104,22 @@ public class ClientController {
     }
     Integer getPort() {
         return port;
+    }
+
+    @FXML
+    void acceptUsername(ActionEvent event) {
+        connectBtn.setDisable(true);
+        username = nameText.getText();
+
+        enterBtn.setDisable(true);
+        connectBtn.setDisable(false);
+        IPText.setDisable(false);
+        PortText.setDisable(false);
+
+    }
+
+    String getUsername () {
+        return username;
     }
 
 
