@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
 
@@ -18,6 +19,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 
 // "extends Application" indicates that Client is a javaFX application
 public class Client extends Application {
+    Stage stage;
     private Socket socket;
     private BufferedReader bufferedReader;
     private BufferedWriter bufferedWriter;
@@ -90,6 +92,11 @@ public class Client extends Application {
         }).start();
     }
 
+    public void disconnect() {
+        stage.close();
+        System.exit(0);
+    }
+
     public void closeEverything(Socket socket, BufferedReader bufferedReader, BufferedWriter bufferedWriter) {
         try {
             if(bufferedReader != null) {
@@ -109,24 +116,15 @@ public class Client extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        stage = primaryStage;
         // Ask for the username here, since we're in the JavaFX thread and can show dialogs/popups if needed
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter your username for the group chat: ");
         String username = scanner.nextLine();
         System.out.flush();
+        this.username = username;
     
-        // Now initialize the socket here, so the 'Client' instance created by JavaFX is the one that's fully initialized
-        try {
-            Socket socket = new Socket("localhost", 1234);
-            this.socket = socket;
-            this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            this.username = username;
-            setReady(true); // This Client instance is now ready
-        } catch (IOException e) {
-            closeEverything(socket, bufferedReader, bufferedWriter);
-        }
-    
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("ChatClient.fxml"));
         Parent root = loader.load();
         this.controller = loader.getController();
@@ -135,12 +133,28 @@ public class Client extends Application {
         primaryStage.setScene(new Scene(root));
         primaryStage.setTitle("Group Chat");
         primaryStage.show();
+
+
+    }
     
+    public void connect() {
+        String IPText = controller.getIPText();
+        int port = controller.getPort();
+        try {
+            InetAddress address = InetAddress.getByName(IPText);    
+            Socket socket = new Socket(address, port);
+            this.socket = socket;
+            this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            setReady(true); // This Client instance is now ready
+        } catch (IOException e) {
+            closeEverything(socket, bufferedReader, bufferedWriter);
+        }
+            
         sendMessage("");
         // Start listening for messages
         listenForMessages();
     }
-    
 
     public static void main(String[] args) throws IOException {    
         // Launch the JavaFX application

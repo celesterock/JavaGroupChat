@@ -9,6 +9,18 @@ import javafx.scene.control.TextField;
 public class ClientController {
 
     @FXML
+    private TextField IPText;
+
+    @FXML
+    private TextField PortText;
+
+    @FXML
+    private Button connectBtn;
+
+    @FXML
+    private Button disconnectBtn;
+
+    @FXML
     private TextArea msgHistory;
 
     @FXML
@@ -17,13 +29,9 @@ public class ClientController {
     @FXML
     private Button sendBtn;
 
-    @FXML
-    private Button connectBtn;
-
-    @FXML
-    private Button disconnectBtn;
-
     private Client client;
+    String serverIP;
+    int port;
 
     // Method to set the Client instance
     public void setClient(Client client) {
@@ -59,12 +67,26 @@ public class ClientController {
     void handleConnect(ActionEvent event) {
         //retrieve the server IP and port number from the GUI and
         //use these fields to connect to the server
+        serverIP = IPText.getText(); 
+        port = Integer.parseInt(PortText.getText());
+
+        client.connect();
+
 
     }
+
+    String getIPText() {
+        return serverIP;
+    }
+    Integer getPort() {
+        return port;
+    }
+
 
     @FXML
     void handleDisconnect(ActionEvent event) {
         //initiate disconnecting from the server
+        client.disconnect();
 
     }
 
