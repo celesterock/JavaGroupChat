@@ -117,12 +117,12 @@ public class Client extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         stage = primaryStage;
-        // Ask for the username here, since we're in the JavaFX thread and can show dialogs/popups if needed
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter your username for the group chat: ");
-        String username = scanner.nextLine();
-        System.out.flush();
-        this.username = username;
+        // // Ask for the username here, since we're in the JavaFX thread and can show dialogs/popups if needed
+        // Scanner scanner = new Scanner(System.in);
+        // System.out.println("Enter your username for the group chat: ");
+        // String username = scanner.nextLine();
+        // System.out.flush();
+        // this.username = username;
     
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("ChatClient.fxml"));
@@ -130,6 +130,7 @@ public class Client extends Application {
         this.controller = loader.getController();
         controller.setClient(this); // Pass this fully initialized Client instance to the controller
     
+        
         primaryStage.setScene(new Scene(root));
         primaryStage.setTitle("Group Chat");
         primaryStage.show();
@@ -138,6 +139,7 @@ public class Client extends Application {
     }
     
     public void connect() {
+        this.username = controller.getUsername();
         String IPText = controller.getIPText();
         int port = controller.getPort();
         try {
