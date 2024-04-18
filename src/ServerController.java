@@ -37,6 +37,9 @@ public class ServerController {
         //to start running the server w that port
         port = Integer.parseInt(PortText.getText());
         server.startServer();
+
+        // prevent the user from clicking start more than once
+        startServerBtn.setDisable(true);
     }
 
     @FXML 

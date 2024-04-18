@@ -72,6 +72,8 @@ public class ClientController {
 
         client.connect();
 
+        connectBtn.setDisable(true);
+
 
     }
 
