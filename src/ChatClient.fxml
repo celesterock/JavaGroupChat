@@ -13,8 +13,8 @@
       <TextField layoutX="176.0" layoutY="60.0" prefHeight="25.0" prefWidth="89.0" />
       <Label layoutX="314.0" layoutY="64.0" text="Port" />
       <TextField layoutX="345.0" layoutY="60.0" prefHeight="25.0" prefWidth="89.0" />
-      <Button layoutX="190.0" layoutY="113.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="Connect" />
-      <Button layoutX="314.0" layoutY="113.0" mnemonicParsing="false" text="Disconnect" />
+      <Button fx:id="connectBtn" layoutX="190.0" layoutY="113.0" mnemonicParsing="false" onAction="#handleConnect" prefHeight="25.0" prefWidth="75.0" text="Connect" />
+      <Button fx:id="disconnectBtn" layoutX="314.0" layoutY="113.0" mnemonicParsing="false" onAction="#handleDisconnect" text="Disconnect" />
       <Label layoutX="56.0" layoutY="176.0" text="Send Message" />
       <TextField fx:id="msgInput" layoutX="138.0" layoutY="172.0" prefHeight="25.0" prefWidth="276.0" />
       <TextArea fx:id="msgHistory" layoutX="138.0" layoutY="224.0" prefHeight="134.0" prefWidth="325.0" />
