@@ -12,7 +12,7 @@
       <Button fx:id="startServerBtn" layoutX="345.0" layoutY="93.0" mnemonicParsing="false" onAction="#startServer" text="Start" />
       <Button fx:id="stopServerBtn" layoutX="396.0" layoutY="93.0" mnemonicParsing="false" onAction="#stopServer" text="Stop" />
       <Label layoutX="149.0" layoutY="97.0" text="Port" />
-      <TextField fx:id="PortText" layoutX="185.0" layoutY="93.0" />
+      <TextField fx:id="PortText" layoutX="185.0" layoutY="93.0" text="1234" />
       <TextArea fx:id="msgHistory" layoutX="149.0" layoutY="162.0" prefHeight="153.0" prefWidth="287.0" />
       <ScrollBar layoutX="429.0" layoutY="162.0" orientation="VERTICAL" prefHeight="153.0" prefWidth="14.0" />
       <Label layoutX="77.0" layoutY="162.0" text="Messages" />

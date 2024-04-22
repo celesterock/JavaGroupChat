@@ -5,10 +5,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.Scanner;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -32,6 +36,10 @@ public class Client extends Application {
         this.bufferedReader = null;
         this.bufferedWriter = null;
         this.username = "DefaultUsername";
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
     
     // -----------------------------------------------------------------------------------------------------------------------
@@ -117,14 +125,6 @@ public class Client extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         stage = primaryStage;
-        // // Ask for the username here, since we're in the JavaFX thread and can show dialogs/popups if needed
-        // Scanner scanner = new Scanner(System.in);
-        // System.out.println("Enter your username for the group chat: ");
-        // String username = scanner.nextLine();
-        // System.out.flush();
-        // this.username = username;
-    
-
         FXMLLoader loader = new FXMLLoader(getClass().getResource("ChatClient.fxml"));
         Parent root = loader.load();
         this.controller = loader.getController();
@@ -134,34 +134,54 @@ public class Client extends Application {
         primaryStage.setScene(new Scene(root));
         primaryStage.setTitle("Group Chat");
         primaryStage.show();
-
-
     }
-    
+
+
     public void connect() {
-        this.username = controller.getUsername();
         String IPText = controller.getIPText();
         int port = controller.getPort();
-        // boolean isConnected = false;
-            try {
-                // while (!isConnected) {
-                InetAddress address = InetAddress.getByName(IPText);    
-                Socket socket = new Socket(address, port);
-                this.socket = socket;
-                this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-                this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                setReady(true); // This Client instance is now ready
-                // }
-            } catch (IOException e) {
-                System.out.println("Client conenct() function catch!");
-                closeEverything(socket, bufferedReader, bufferedWriter);
-            }
+        
+        try {
+            InetAddress address = InetAddress.getByName(IPText);    
+            Socket socket = new Socket();
 
+            // 1 second time out
+            socket.connect(new InetSocketAddress(address, port), 1000); 
+            this.socket = socket;
+            this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            setReady(true); // This Client instance is now ready
+            Platform.runLater(() -> {
+                controller.updateStatus("Connected successfully!");
+                controller.enableChatControls(true);
+            });
+            listenForMessages();
+        } catch (UnknownHostException e) {
+            Platform.runLater(() -> controller.updateStatus("Error: Invalid IP address. Please check and try again."));
+        } catch (SocketTimeoutException e) {
+            Platform.runLater(() -> controller.updateStatus("Error: Connection timed out. Server might be down or busy."));
+        } catch (IOException e) {
+            Platform.runLater(() -> controller.updateStatus("Error: Unable to establish connection. Check server and port."));
+        } finally {
+            if (!isConnected()) {
+                Platform.runLater(() -> controller.enableConnectButton(true));
+            }
+        }
+
+        if(isConnected()) {
             
-        sendMessage("");
-        // Start listening for messages
-        listenForMessages();
+            sendMessage("");
+            
+            // Start listening for messages
+            listenForMessages();   
+        }
     }
+
+    public boolean isConnected() {
+        // Check if the socket exists and is connected, not closed
+        return this.socket != null && this.socket.isConnected() && !this.socket.isClosed();
+    }
+    
 
     public static void main(String[] args) throws IOException {    
         // Launch the JavaFX application
